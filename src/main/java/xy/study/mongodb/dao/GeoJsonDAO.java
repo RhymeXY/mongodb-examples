@@ -4,6 +4,7 @@ import org.bson.Document;
 import org.bson.types.ObjectId;
 import xy.study.mongodb.dto.GeoJsonPointQuery;
 import xy.study.mongodb.dto.GeofenceDTO;
+import xy.study.mongodb.dto.GeofenceDistanceDTO;
 import xy.study.mongodb.pojo.Geofence;
 
 import java.util.List;
@@ -22,4 +23,6 @@ public interface GeoJsonDAO {
     List<GeofenceDTO> in(GeoJsonPointQuery pointQuery);
 
     List<GeofenceDTO> near(GeoJsonPointQuery pointQuery);
+
+    GeofenceDistanceDTO nearest(GeoJsonPointQuery pointQuery);
 }

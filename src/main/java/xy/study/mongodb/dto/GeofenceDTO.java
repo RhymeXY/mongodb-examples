@@ -8,11 +8,11 @@ import org.springframework.data.mongodb.core.index.Indexed;
 @Data
 public class GeofenceDTO<T> {
     @Id
-    private ObjectId id;
+    ObjectId id;
 
     @Indexed(unique = true)
-    private String name;
+    String name;
 
-    private String type;
-    private GeoJsonDTO<T> geo;
+    String type;
+    GeoJsonDTO<T> geo;
 }

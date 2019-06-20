@@ -41,4 +41,10 @@ public class GeoJsonController {
 
         return geoJsonService.near(query);
     }
+
+    @GetMapping(value = "/nearest")
+    public Object nearest(GeoJsonPointQuery query) {
+
+        return geoJsonService.nearest(query);
+    }
 }

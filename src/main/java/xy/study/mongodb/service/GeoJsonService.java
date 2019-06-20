@@ -64,4 +64,8 @@ public class GeoJsonService {
     public Object near(GeoJsonPointQuery pointQuery) {
         return geoJsonDAO.near(pointQuery);
     }
+
+    public Object nearest(GeoJsonPointQuery pointQuery) {
+        return geoJsonDAO.nearest(pointQuery);
+    }
 }

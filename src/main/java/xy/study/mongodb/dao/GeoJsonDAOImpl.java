@@ -1,18 +1,27 @@
 package xy.study.mongodb.dao;
 
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.geo.Distance;
+import org.springframework.data.geo.GeoResult;
+import org.springframework.data.geo.GeoResults;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.NearQuery;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 import xy.study.mongodb.config.MongoDBCollections;
 import xy.study.mongodb.dto.GeoJsonPointQuery;
 import xy.study.mongodb.dto.GeofenceDTO;
+import xy.study.mongodb.dto.GeofenceDistanceDTO;
 import xy.study.mongodb.pojo.Geofence;
+import xy.study.mongodb.utils.DistanceConvert;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
@@ -64,6 +73,20 @@ public class GeoJsonDAOImpl implements GeoJsonDAO {
         Query query = pointQuery.buildNearQuery();
         log.info("near query : {}", query.toString());
         return mongoTemplate.find(query, GeofenceDTO.class, MongoDBCollections.GEOFENCE);
+    }
+
+    @Override
+    public GeofenceDistanceDTO nearest(GeoJsonPointQuery pointQuery) {
+        NearQuery nearQuery = pointQuery.buildNearDistanceQuery();
+
+        GeoResults<GeofenceDistanceDTO> geoResults = mongoTemplate.geoNear(nearQuery, GeofenceDistanceDTO.class, MongoDBCollections.GEOFENCE);
+        List<GeoResult<GeofenceDistanceDTO>> content = geoResults.getContent();
+        List<GeoResult<GeofenceDistanceDTO>> geoResultList = content.stream().sorted(Comparator.comparing(GeoResult::getDistance)).collect(Collectors.toList());
+        GeoResult<GeofenceDistanceDTO> head = geoResultList.get(0);
+        Distance distance = DistanceConvert.toKm(head.getDistance());
+        @NonNull GeofenceDistanceDTO geofenceDistanceDTO = head.getContent();
+        geofenceDistanceDTO.setDistance(distance);
+        return geofenceDistanceDTO;
     }
 
 }

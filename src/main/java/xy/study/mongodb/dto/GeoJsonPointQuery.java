@@ -1,9 +1,12 @@
 package xy.study.mongodb.dto;
 
 import lombok.Data;
+import org.springframework.data.geo.Distance;
+import org.springframework.data.geo.Metrics;
 import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.CriteriaDefinition;
+import org.springframework.data.mongodb.core.query.NearQuery;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
@@ -53,6 +56,21 @@ public class GeoJsonPointQuery {
           */
         near = ObjectUtils.isEmpty(minDistance) ? near : near.minDistance(minDistance);
         near = ObjectUtils.isEmpty(maxDistance) ? near : near.maxDistance(maxDistance);
+        return near;
+    }
+
+    /**
+     * NearQuery返回距离
+     *
+     * @return
+     */
+    public NearQuery buildNearDistanceQuery() {
+        GeoJsonPoint geoJsonPoint = new GeoJsonPoint(x, y);
+        NearQuery near = NearQuery.near(geoJsonPoint);
+        near.spherical(true);
+
+        near = ObjectUtils.isEmpty(minDistance) ? near : near.minDistance(new Distance(minDistance,Metrics.KILOMETERS));
+        near = ObjectUtils.isEmpty(maxDistance) ? near : near.maxDistance(new Distance(maxDistance, Metrics.KILOMETERS));
         return near;
     }
 
