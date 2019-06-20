@@ -12,8 +12,8 @@ import org.springframework.util.Assert;
 import xy.study.mongodb.config.GeoJsonType;
 import xy.study.mongodb.config.MongoDBCollections;
 import xy.study.mongodb.dao.GeoJsonDAO;
+import xy.study.mongodb.dto.GeoJsonPointQuery;
 import xy.study.mongodb.dto.GeofenceRequest;
-import xy.study.mongodb.dto.Location;
 import xy.study.mongodb.pojo.Geofence;
 
 import java.util.List;
@@ -53,8 +53,15 @@ public class GeoJsonService {
         return geoJsonDAO.findByNameReturnObject(name, MongoDBCollections.GEOFENCE);
     }
 
-    public Object in(ObjectId id, Location location) {
-        boolean b = geoJsonDAO.in(id, location);
-        return b;
+    public Object in(String id, GeoJsonPointQuery pointQuery) {
+        return geoJsonDAO.in(new ObjectId(id), pointQuery);
+    }
+
+    public Object in(GeoJsonPointQuery pointQuery) {
+        return geoJsonDAO.in(pointQuery);
+    }
+
+    public Object near(GeoJsonPointQuery pointQuery) {
+        return geoJsonDAO.near(pointQuery);
     }
 }

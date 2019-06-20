@@ -1,10 +1,9 @@
 package xy.study.mongodb.controller;
 
-import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import xy.study.mongodb.dto.GeoJsonPointQuery;
 import xy.study.mongodb.dto.GeofenceRequest;
-import xy.study.mongodb.dto.Location;
 import xy.study.mongodb.service.GeoJsonService;
 
 @RequestMapping(value = "/api/geos")
@@ -25,9 +24,21 @@ public class GeoJsonController {
     }
 
     @GetMapping(value = "/in/{id:[a-zA-Z0-9]{0,24}}")
-    public Object in(@PathVariable("id") ObjectId id,
-                     Location location) {
+    public Object in(@PathVariable("id") String id,
+                     GeoJsonPointQuery query) {
 
-        return geoJsonService.in(id, location);
+        return geoJsonService.in(id, query);
+    }
+
+    @GetMapping(value = "/in")
+    public Object in(GeoJsonPointQuery query) {
+
+        return geoJsonService.in(query);
+    }
+
+    @GetMapping(value = "/near")
+    public Object near(GeoJsonPointQuery query) {
+
+        return geoJsonService.near(query);
     }
 }
